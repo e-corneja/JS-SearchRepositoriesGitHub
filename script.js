@@ -25,11 +25,20 @@ searchInput.addEventListener("input", function () {
 });
 
 async function searchRepositories(query) {
-  const apiUrl = `https://api.github.com/search/repositories?q=${query}`;
-  const response = await fetch(apiUrl);
-  const data = await response.json();
+  try {
+    const apiUrl = `https://api.github.com/search/repositories?q=${query}`;
+    const response = await fetch(apiUrl);
 
-  displayAutocomplete(data.items);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    displayAutocomplete(data.items);
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+  }
 }
 
 function displayAutocomplete(repositories) {
